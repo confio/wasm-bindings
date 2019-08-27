@@ -28,6 +28,16 @@ Go into any subdirectory, called `<contract>` from now on:
 To compile the code, run  `cargo build --release --target wasm32-unknown-unknown`. 
 The output will be in `target/wasm32-unknown-unknown/release/<contract>.wasm`
 
+You probably don't want to explicitly set the target every time, so you can just
+add the following to `.cargo/config`:
+
+```yaml
+[build]
+target = "wasm32-unknown-unknown"
+```
+
+And you can now just call `cargo build --release`.
+
 ## Optimizations
 
 The size of the wasm output is critical if it is supposed to go on a blockchain.
@@ -53,7 +63,7 @@ overflow-checks = true
 ```
 
 Check the size of the original output `du -sh  target/wasm32-unknown-unknown/release/<contract>.wasm `
-Then recompile with  `cargo build --release --target wasm32-unknown-unknown`, and check the new size.
+Then recompile with  `cargo build --release`, and check the new size.
 It should be significantly smaller. If this is too slow for your development cycle, remove these optimizations until final production.
 
 ## no_std (experimental)
