@@ -32,11 +32,15 @@ You probably don't want to explicitly set the target every time, so you can just
 add the following to `.cargo/config`:
 
 ```yaml
-[build]
-target = "wasm32-unknown-unknown"
+[alias]
+wasm = "build --release --target wasm32-unknown-unknown"
 ```
 
-And you can now just call `cargo build --release`.
+And you can now just call `cargo wasm` to build it, and `cargo test` to run tests.
+
+**Note** Using `build.target` seems to force tests to use that target as well, remove this or find a work-around.
+[This discussion](https://internals.rust-lang.org/t/set-default-target-for-cargo-build-but-not-for-cargo-test/9777)
+and [closed PR](https://github.com/rust-lang/cargo/pull/6825) seem to suggest this will never be done.
 
 ## Optimizations
 
@@ -63,7 +67,7 @@ overflow-checks = true
 ```
 
 Check the size of the original output `du -sh  target/wasm32-unknown-unknown/release/<contract>.wasm `
-Then recompile with  `cargo build --release`, and check the new size.
+Then recompile with  `cargo wasm`, and check the new size.
 It should be significantly smaller. If this is too slow for your development cycle, remove these optimizations until final production.
 
 There are many more complex approaches for small builds. Those interested can look in the [optimizations document](Optimization.md)
