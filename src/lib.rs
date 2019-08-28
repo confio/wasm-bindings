@@ -1,10 +1,9 @@
 pub mod compiler;
 
-pub use compiler::{run, setup_singlepass, setup_metered, setup_clif};
+pub use compiler::{run, setup_clif, setup_metered, setup_singlepass};
 
 #[cfg(feature = "llvm")]
-pub use compiler::{setup_llvm};
-
+pub use compiler::{setup_llvm, setup_metered_llvm};
 
 #[cfg(test)]
 mod tests {
@@ -50,6 +49,19 @@ mod tests {
         assert_eq!(metering::get_points_used(&instance), 9730);
     }
 
+    // Note: this triggers an llvm compilation error
+//    #[cfg(feature = "llvm")]
+//    #[test]
+//    fn test_metered_execution_llvm() {
+//        // 20k limit
+//        let instance = compiler::setup_metered_llvm(20000).unwrap();
+//        assert_eq!(0, metering::get_points_used(&instance));
+//        let val = compiler::run(&instance, 1, 19, 20);
+//        assert_eq!(2300, val);
+//        // sha is around 10k gas?
+//        assert_eq!(metering::get_points_used(&instance), 9730);
+//    }
+
     #[test]
     fn test_metered_execution_100() {
         // 1 million limit
@@ -61,4 +73,3 @@ mod tests {
         assert_eq!(metering::get_points_used(&instance), 940535);
     }
 }
-
