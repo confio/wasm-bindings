@@ -42,4 +42,11 @@ mod tests {
         let expected = [7, 26, 45, 64, 83, 102, 121, 140, 159, 178, 197, 216, 235, 254, 17, 36, 55, 74, 93, 112, 131, 150, 169, 188, 207, 226, 245, 8, 27, 46, 65, 84];
         assert_eq!(&expected, &res);
     }
+
+    #[test]
+    fn test_hash_num() {
+        let res = hash_num(19, 20);
+        let expected = 2300;
+        assert_eq!(expected, res);
+    }
 }
