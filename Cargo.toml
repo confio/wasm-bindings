@@ -10,3 +10,19 @@ edition = "2018"
 members = ["contracts/hasher"]
 
 [dependencies]
+# why is this only in lib in wasmer, not own repo/crate?
+wasmer-middleware-common = { git = "https://github.com/wasmerio/wasmer", branch = "master" }
+wasmer-runtime = { git = "https://github.com/wasmerio/wasmer", branch = "master" }
+wasmer-runtime-core = { git = "https://github.com/wasmerio/wasmer", branch = "master" }
+wasmer-singlepass-backend = { git = "https://github.com/wasmerio/wasmer", branch = "master" }
+#wasmer-clif-backend = { git = "https://github.com/wasmerio/wasmer", branch = "master" }
+#wasmer-llvm-backend = { git = "https://github.com/wasmerio/wasmer", branch = "master" }
+
+# we cannot use tags?
+#wasmer-middleware-common = { git = "https://github.com/wasmerio/wasmer", branch = "0.6.0" }
+
+
+# huh? why doesn't this compile????
+#wasmer-runtime = "0.6.0"
+#wasmer-singlepass-backend = "0.6.0"
+#wasmer-clif-backend = "0.6.0"
