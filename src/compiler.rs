@@ -1,10 +1,15 @@
-use wasmer_runtime::{compile, compile_with, error, imports};
+use wasmer_runtime::{compile_with, error, imports};
 use wasmer_runtime_core::types::Value;
 use wasmer_runtime_core::Instance;
 
 use wasmer_middleware_common::metering;
 use wasmer_runtime_core::backend::Compiler;
-//use wasmer_runtime::Ctx;
+
+use wasmer_clif_backend::CraneliftCompiler;
+use wasmer_singlepass_backend::SinglePassCompiler;
+
+#[cfg(feature = "llvm")]
+use wasmer_llvm_backend::LLVMCompiler;
 
 // Make sure that the compiled wasm-sample-app is accessible at this path.
 static WASM: &'static [u8] =
@@ -24,9 +29,22 @@ pub fn get_metered_compiler(limit: u64, metering: bool) -> impl Compiler {
     c
 }
 
-pub fn setup() -> error::Result<Instance> {
+pub fn setup_singlepass() -> error::Result<Instance> {
     let import_object = imports! {};
-    let module = compile(&WASM)?;
+    let module = compile_with(&WASM, &SinglePassCompiler::new())?;
+    module.instantiate(&import_object)
+}
+
+pub fn setup_clif() -> error::Result<Instance> {
+    let import_object = imports! {};
+    let module = compile_with(&WASM, &CraneliftCompiler::new())?;
+    module.instantiate(&import_object)
+}
+
+#[cfg(feature = "llvm")]
+pub fn setup_llvm() -> error::Result<Instance> {
+    let import_object = imports! {};
+    let module = compile_with(&WASM, &LLVMCompiler::new())?;
     module.instantiate(&import_object)
 }
 

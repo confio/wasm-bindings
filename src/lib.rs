@@ -1,15 +1,34 @@
 pub mod compiler;
 
-pub use compiler::{run, setup};
-use wasmer_middleware_common::metering;
+pub use compiler::{run, setup_singlepass, setup_metered, setup_clif};
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    use wasmer_middleware_common::metering;
 
     #[test]
-    fn test_execution() {
-        let instance = compiler::setup().unwrap();
+    fn test_execution_singlepass() {
+        let instance = compiler::setup_singlepass().unwrap();
+        assert_eq!(0, metering::get_points_used(&instance));
+        let val = compiler::run(&instance, 1, 19, 20);
+        assert_eq!(2300, val);
+        assert_eq!(0, metering::get_points_used(&instance));
+    }
+
+    #[test]
+    fn test_execution_clif() {
+        let instance = compiler::setup_clif().unwrap();
+        assert_eq!(0, metering::get_points_used(&instance));
+        let val = compiler::run(&instance, 1, 19, 20);
+        assert_eq!(2300, val);
+        assert_eq!(0, metering::get_points_used(&instance));
+    }
+
+    #[cfg(feature = "llvm")]
+    #[test]
+    fn test_execution_llvm() {
+        let instance = compiler::setup_llvm().unwrap();
         assert_eq!(0, metering::get_points_used(&instance));
         let val = compiler::run(&instance, 1, 19, 20);
         assert_eq!(2300, val);
