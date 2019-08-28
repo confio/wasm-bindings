@@ -519,6 +519,7 @@ dependencies = [
 name = "hasher"
 version = "0.1.0"
 dependencies = [
+ "criterion 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "sha2 0.8.0 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 

@@ -14,12 +14,9 @@ harness = false
 name = "hasher"
 
 [dev-dependencies]
+criterion = "0.3"
 
 [dependencies]
-# TODO: move to dev
-criterion = "0.3.0"
-
-
 # why is this only in lib in wasmer, not own repo/crate?
 wasmer-middleware-common = { git = "https://github.com/wasmerio/wasmer", tag = "0.6.0" }
 wasmer-runtime = { git = "https://github.com/wasmerio/wasmer", tag = "0.6.0" }

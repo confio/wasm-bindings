@@ -5,7 +5,14 @@ authors = ["Ethan Frey <ethanfrey@users.noreply.github.com>"]
 edition = "2018"
 
 [lib]
-crate-type = ["cdylib"]
+crate-type = ["cdylib", "rlib"]
+
+[[bench]]
+harness = false
+name = "example"
+
+[dev-dependencies]
+criterion = "0.3"
 
 [dependencies]
 sha2 = "0.8"
