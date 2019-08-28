@@ -1,8 +1,9 @@
-// #[cfg(test)]
+use crate::{setup, run};
+
+#[macro_use]
 use ::criterion::Criterion;
 use ::criterion::{black_box, criterion_group, criterion_main};
 
-use crate::{setup, run};
 
 fn bench_run(c: &mut Criterion) {
     let instance = setup().unwrap();

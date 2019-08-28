@@ -11,8 +11,7 @@ members = ["contracts/hasher"]
 
 [[bench]]
 harness = false
-name = "bench_run"
-path = "./src/bench.rs"
+name = "hasher"
 
 [dev-dependencies]
 

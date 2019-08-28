@@ -1,5 +1,6 @@
-mod compiler;
-//mod bench;
+pub mod compiler;
+
+pub use compiler::{run, setup};
 
 use wasmer_runtime::{error};
 
