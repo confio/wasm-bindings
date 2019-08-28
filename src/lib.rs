@@ -2,6 +2,10 @@ pub mod compiler;
 
 pub use compiler::{run, setup_singlepass, setup_metered, setup_clif};
 
+#[cfg(feature = "llvm")]
+pub use compiler::{setup_llvm};
+
+
 #[cfg(test)]
 mod tests {
     use super::*;
