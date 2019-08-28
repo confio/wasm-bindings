@@ -1,8 +1,8 @@
 use sha2::{Digest, Sha256};
 
 #[no_mangle]
-pub extern "C" fn hash(start: i32, step: i32) -> i32 {
-    hash_num(start, step)
+pub extern "C" fn hash(count: i32, start: i32, step: i32) -> i32 {
+    hash_num(count, start, step)
 }
 
 // hash_num creates a 32 byte array [start, start+step, start+2*step, ...]
@@ -10,9 +10,15 @@ pub extern "C" fn hash(start: i32, step: i32) -> i32 {
 // adding all bytes together.
 //
 // weird algorithm for simple wasm interface
-pub fn hash_num(start: i32, step: i32) -> i32 {
+pub fn hash_num(count: i32, start: i32, step: i32) -> i32 {
     let data = build_array(start, step);
-    let hash = Sha256::digest(&data);
+
+    // one digest to get proper type
+    let mut hash = Sha256::digest(&data);
+    for _i in 1..count {
+        // then iterate the other times
+        hash = Sha256::digest(&hash);
+    }
     let mut sum = 0;
     for i in 0..16 {
         sum += hash[i] as i32;
@@ -47,8 +53,10 @@ mod tests {
 
     #[test]
     fn test_hash_num() {
-        let res = hash_num(19, 20);
-        let expected = 2300;
-        assert_eq!(expected, res);
+        let res = hash_num(1, 19, 20);
+        assert_eq!(2300, res);
+
+        let res = hash_num(100, 19, 20);
+        assert_eq!(2555, res);
     }
 }

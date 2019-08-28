@@ -10,8 +10,11 @@ Then add the following to `Cargo.toml`:
 
 ```yaml
 [lib]
- crate-type = ["cdylib"]
+ crate-type = ["cdylib", "rlib"]
 ```
+
+The `cdylib` is needed for the wasm target. 
+The `rlib` is needed to compile artifacts for benchmarking (and integration tests).
 
 ## Requirements
 
@@ -71,3 +74,11 @@ Then recompile with  `cargo wasm`, and check the new size.
 It should be significantly smaller. If this is too slow for your development cycle, remove these optimizations until final production.
 
 There are many more complex approaches for small builds. Those interested can look in the [optimizations document](Optimization.md)
+
+## Benchmarks
+
+Ensure you also build for `"rlib"`, then add a benchmark for the main exported rust
+function (the code that is wrapped by extern C function). This will give you the
+timing for the pure rust native implementation. You can then compare this to the
+timing info when calling this as wasm.
+
