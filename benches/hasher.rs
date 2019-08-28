@@ -1,4 +1,4 @@
-use crate::{setup, run};
+use wasm_bindings::{setup, run};
 
 #[macro_use]
 use ::criterion::Criterion;
