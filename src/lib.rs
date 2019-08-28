@@ -14,7 +14,7 @@ mod tests {
 
         assert_eq!(0, metering::get_points_used(&instance));
 
-        let val = compiler::run(&instance, 19, 20);
+        let val = compiler::run(&instance, 1, 19, 20);
         assert_eq!(2300, val);
 
         // TODO: reqire this to actually meter

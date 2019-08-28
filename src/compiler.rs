@@ -32,8 +32,8 @@ pub fn setup() -> error::Result<Instance> {
 }
 
 // just panic here if we can't run
-pub fn run(inst: &Instance, start: i32, step: i32) -> i32 {
-    let result = inst.call("hash", &[start.into(), step.into()]).unwrap();
+pub fn run(inst: &Instance, count: i32, start: i32, step: i32) -> i32 {
+    let result = inst.call("hash", &[count.into(), start.into(), step.into()]).unwrap();
     if let Value::I32(val) = result[0] {
         val
     } else {
