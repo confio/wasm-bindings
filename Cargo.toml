@@ -9,12 +9,23 @@ edition = "2018"
 [workspace]
 members = ["contracts/hasher"]
 
+[[bench]]
+harness = false
+name = "bench_run"
+path = "./src/bench.rs"
+
+[dev-dependencies]
+
 [dependencies]
+# TODO: move to dev
+criterion = "0.3.0"
+
+
 # why is this only in lib in wasmer, not own repo/crate?
-wasmer-middleware-common = { git = "https://github.com/wasmerio/wasmer", branch = "master" }
-wasmer-runtime = { git = "https://github.com/wasmerio/wasmer", branch = "master" }
-wasmer-runtime-core = { git = "https://github.com/wasmerio/wasmer", branch = "master" }
-wasmer-singlepass-backend = { git = "https://github.com/wasmerio/wasmer", branch = "master" }
+wasmer-middleware-common = { git = "https://github.com/wasmerio/wasmer", tag = "0.6.0" }
+wasmer-runtime = { git = "https://github.com/wasmerio/wasmer", tag = "0.6.0" }
+wasmer-runtime-core = { git = "https://github.com/wasmerio/wasmer", tag = "0.6.0" }
+wasmer-singlepass-backend = { git = "https://github.com/wasmerio/wasmer", tag = "0.6.0" }
 #wasmer-clif-backend = { git = "https://github.com/wasmerio/wasmer", branch = "master" }
 #wasmer-llvm-backend = { git = "https://github.com/wasmerio/wasmer", branch = "master" }
 
@@ -24,5 +35,6 @@ wasmer-singlepass-backend = { git = "https://github.com/wasmerio/wasmer", branch
 
 # huh? why doesn't this compile????
 #wasmer-runtime = "0.6.0"
+#wasmer-runtime-core = "0.6.0"
 #wasmer-singlepass-backend = "0.6.0"
 #wasmer-clif-backend = "0.6.0"
