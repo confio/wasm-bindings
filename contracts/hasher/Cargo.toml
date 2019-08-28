@@ -5,12 +5,12 @@ authors = ["Ethan Frey <ethanfrey@users.noreply.github.com>"]
 edition = "2018"
 
 [lib]
-crate-type = ["cdylib"]
+# we need cdylib to build *.wasm file, rlib for benchmarking
+crate-type = ["cdylib", "rlib"]
 
 [[bench]]
 harness = false
 name = "example"
-#crate-type = ["rlib"]
 
 [dev-dependencies]
 criterion = "0.3"
