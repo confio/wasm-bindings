@@ -12,7 +12,7 @@ use wasmer_singlepass_backend::SinglePassCompiler;
 use wasmer_llvm_backend::LLVMCompiler;
 
 // Make sure that the compiled wasm-sample-app is accessible at this path.
-static WASM: &'static [u8] = include_bytes!("../target/wasm/hasher.wasm");
+static WASM: &'static [u8] = include_bytes!("../wasm/hasher.wasm");
 
 fn get_metered_compiler(limit: u64, metering: bool) -> impl Compiler {
     use wasmer_runtime_core::codegen::{MiddlewareChain, StreamingCompiler};
