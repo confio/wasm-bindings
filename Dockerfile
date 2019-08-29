@@ -16,5 +16,22 @@ RUN apt-get install -y -t buster-backports libllvm8 llvm-8 llvm-8-dev llvm-8-run
 RUN apt-get install libz-dev
 ENV LLVM_SYS_80_PREFIX=/usr/lib/llvm-8
 
-# docker run -d  -v "$(pwd)":/app
+# now we want to download and compile all deps (dev mode), for faster tests when using the image
+# see https://blog.mgattozzi.dev/caching-rust-docker-builds/
+COPY dummy.rs /app/src/lib.rs
+COPY Cargo.lock /app/
+COPY Cargo.toml /app/
+# we need this so Cargo.toml is valid
+COPY benches/hasher.rs /app/benches/
+
+# make sure we precompile everything. two steps for easier rebuild if the second fails
+RUN cargo test
+# don't run these tests, as they fail, but build all deps
+RUN cargo build --tests --features llvm
+
+# we now need to remove the dummy wasm_bindings compilation artifacts (as they are newer than source)
+RUN rm -rf $(find target/debug -name 'wasm_bindings-*')
+
+# we want to use the cached target from the build, and the src from our actual code
+# docker run --mount type=bind,src="$(pwd)",dst=/app --mount type=volume,dst=/app/target --rm -it wasmbind:nightly /bin/bash
 CMD ["make", "test"]

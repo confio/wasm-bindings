@@ -49,10 +49,15 @@ the simplest approach is likely to use the Dockerfile.
 This is also useful for reproduceable build when submitting bug reports.
 Before submitting a bug, please `rm -rf target` and then run the tests
 in docker to verify that they fail in a standard environment. This helps
-separate issues between 
+separate issues between code issues and local setup.
+
+This is also the start of allowing CI builds
 
 ```shell
 docker build -t wasmbind:nightly .
-docker run --rm -it -v"$(pwd)":/app wasmbind:nightly make test
-docker run --rm -it -v"$(pwd)":/app wasmbind:nightly make test_llvm
+docker run --mount type=bind,src="$(pwd)",dst=/app --mount type=volume,dst=/app/target --rm wasmbind:nightly
+docker run --mount type=bind,src="$(pwd)",dst=/app --mount type=volume,dst=/app/target --rm wasmbind:nightly make test_llvm
+
+# interactive
+docker run --mount type=bind,src="$(pwd)",dst=/app --mount type=volume,dst=/app/target --rm -it wasmbind:nightly /bin/bash
 ```
