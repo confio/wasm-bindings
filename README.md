@@ -40,3 +40,13 @@ cargo build --features llvm
 cargo test --features llvm
 cargo bench --features llvm
 ````
+
+## Docker support
+
+If you are not running a linux system or have rust tooling installed, 
+the simplest approach is likely to use the Dockerfile.
+
+```shell
+docker build -t wasmbind:latest .
+docker run wasmbind:latest test
+```

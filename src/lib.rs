@@ -46,30 +46,30 @@ mod tests {
         let val = compiler::run(&instance, 1, 19, 20);
         assert_eq!(2300, val);
         // sha is around 10k gas?
-        assert_eq!(metering::get_points_used(&instance), 9730);
+        assert_eq!(metering::get_points_used(&instance), 12767);
     }
 
     // Note: this triggers an llvm compilation error
-//    #[cfg(feature = "llvm")]
-//    #[test]
-//    fn test_metered_execution_llvm() {
-//        // 20k limit
-//        let instance = compiler::setup_metered_llvm(20000).unwrap();
-//        assert_eq!(0, metering::get_points_used(&instance));
-//        let val = compiler::run(&instance, 1, 19, 20);
-//        assert_eq!(2300, val);
-//        // sha is around 10k gas?
-//        assert_eq!(metering::get_points_used(&instance), 9730);
-//    }
+    #[cfg(feature = "llvm")]
+    #[test]
+    fn test_metered_execution_llvm() {
+        // 20k limit
+        let instance = compiler::setup_metered_llvm(20000).unwrap();
+        assert_eq!(0, metering::get_points_used(&instance));
+        let val = compiler::run(&instance, 1, 19, 20);
+        assert_eq!(2300, val);
+        // sha is around 10k gas?
+        assert_eq!(metering::get_points_used(&instance), 12767);
+    }
 
     #[test]
     fn test_metered_execution_100() {
         // 1 million limit
-        let instance = compiler::setup_metered(1000000).unwrap();
+        let instance = compiler::setup_metered(2000000).unwrap();
         assert_eq!(0, metering::get_points_used(&instance));
         let val = compiler::run(&instance, 100, 19, 20);
         assert_eq!(2555, val);
         // 100 sha in a loop is a little cheaper than 100 separate calls
-        assert_eq!(metering::get_points_used(&instance), 940535);
+        assert_eq!(metering::get_points_used(&instance), 1142166);
     }
 }

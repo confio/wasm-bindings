@@ -26,5 +26,3 @@ wasm_hash_clif(100, 16, 43)
 wasm_hash_llvm(100, 16, 43)                                                                             
                         time:   [47.579 us 48.075 us 48.620 us]
 ```
-
-

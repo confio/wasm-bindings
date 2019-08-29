@@ -20,7 +20,7 @@ sha2 = "0.8"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [profile.release]
-opt-level = "z"
+opt-level = 3
 debug = false
 rpath = false
 lto = true
