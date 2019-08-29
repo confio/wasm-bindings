@@ -1,4 +1,4 @@
-.PHONY: all wasm test
+.PHONY: all wasm test test_llvm
 
 all: wasm test
 
@@ -7,5 +7,8 @@ wasm:
 	cd contracts/hasher && cargo wasm
 	cp contracts/hasher/target/wasm32-unknown-unknown/release/hasher.wasm target/wasm
 
-test:
+test: wasm
 	cargo test
+
+test_llvm: wasm
+	cargo test --features llvm

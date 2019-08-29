@@ -43,10 +43,16 @@ cargo bench --features llvm
 
 ## Docker support
 
-If you are not running a linux system or have rust tooling installed, 
-the simplest approach is likely to use the Dockerfile.
+If you are not running a linux system or don't have rust tooling installed, 
+the simplest approach is likely to use the Dockerfile. 
+
+This is also useful for reproduceable build when submitting bug reports.
+Before submitting a bug, please `rm -rf target` and then run the tests
+in docker to verify that they fail in a standard environment. This helps
+separate issues between 
 
 ```shell
-docker build -t wasmbind:latest .
-docker run wasmbind:latest test
+docker build -t wasmbind:nightly .
+docker run --rm -it -v"$(pwd)":/app wasmbind:nightly make test
+docker run --rm -it -v"$(pwd)":/app wasmbind:nightly make test_llvm
 ```

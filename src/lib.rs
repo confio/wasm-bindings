@@ -45,8 +45,10 @@ mod tests {
         assert_eq!(0, metering::get_points_used(&instance));
         let val = compiler::run(&instance, 1, 19, 20);
         assert_eq!(2300, val);
-        // sha is around 10k gas?
-        assert_eq!(metering::get_points_used(&instance), 12767);
+        // sha is around 10k gas? depends on how we build the wasm file
+        let used = metering::get_points_used(&instance);
+        assert!(used > 9000);
+        assert!(used < 13000);
     }
 
     // Note: this triggers an llvm compilation error
@@ -58,8 +60,10 @@ mod tests {
         assert_eq!(0, metering::get_points_used(&instance));
         let val = compiler::run(&instance, 1, 19, 20);
         assert_eq!(2300, val);
-        // sha is around 10k gas?
-        assert_eq!(metering::get_points_used(&instance), 12767);
+        // sha is around 10k gas? depends on how we build the wasm file
+        let used = metering::get_points_used(&instance);
+        assert!(used > 9000);
+        assert!(used < 13000);
     }
 
     #[test]
@@ -69,7 +73,9 @@ mod tests {
         assert_eq!(0, metering::get_points_used(&instance));
         let val = compiler::run(&instance, 100, 19, 20);
         assert_eq!(2555, val);
-        // 100 sha in a loop is a little cheaper than 100 separate calls
-        assert_eq!(metering::get_points_used(&instance), 1142166);
+        // 100 sha is around 1.15m gas? depends on how we build the wasm file
+        let used = metering::get_points_used(&instance);
+        assert!(used > 1140000);
+        assert!(used < 1160000);
     }
 }
