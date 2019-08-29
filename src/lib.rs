@@ -47,8 +47,8 @@ mod tests {
         assert_eq!(2300, val);
         // sha is around 10k gas? depends on how we build the wasm file
         let used = metering::get_points_used(&instance);
-        assert!(used > 9000, "used {}", used);
-        assert!(used < 14000, "used {}", used);
+        assert!(used > 11000, "used {}", used);
+        assert!(used < 13000, "used {}", used);
     }
 
     // Note: this triggers an llvm compilation error
@@ -62,8 +62,8 @@ mod tests {
         assert_eq!(2300, val);
         // sha is around 10k gas? depends on how we build the wasm file
         let used = metering::get_points_used(&instance);
-        assert!(used > 9000, "used {}", used);
-        assert!(used < 14000, "used {}", used);
+        assert!(used > 11000, "used {}", used);
+        assert!(used < 13000, "used {}", used);
     }
 
     #[test]
@@ -75,7 +75,7 @@ mod tests {
         assert_eq!(2555, val);
         // 100 sha is around 1.15m gas? depends on how we build the wasm file
         let used = metering::get_points_used(&instance);
-        assert!(used > 1140000, "used {}", used);
-        assert!(used < 1240000, "used {}", used);
+        assert!(used > 1120000, "used {}", used);
+        assert!(used < 1140000, "used {}", used);
     }
 }
