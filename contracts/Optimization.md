@@ -5,16 +5,58 @@ A 1 MB binary is small for a normal program, but huge for a blockchain transacti
 If the `*.wasm` output is still too large after setting a few compiler flags mentioned
 before, then you can try some of these approaches.
 
+
 ## Trimming Wasm files
 
-Here are some tools to try out to shrink space:
+Some more tips from [the official book](https://rustwasm.github.io/book/reference/code-size.html)
 
-* `--gc-sections` compiler flag (from [wasm-gc](https://github.com/alexcrichton/wasm-gc))
+Use [twiggy](https://github.com/rustwasm/twiggy):
+
+```shell script
+cargo install twiggy
+twiggy top wasm/hasher.wasm | head -20
+twiggy garbage wasm/hasher.wasm
+twiggy dominators wasm/hasher.wasm | less
+```
+
+`wasm-gc` seems to still be necessary
+
+```shell script
+cargo install wasm-gc
+wasm-gc wasm/hasher.wasm
+```
+
+After this, it seems `"function_names" subsection` takes 12% and `dlmalloc` 
+related code around 20% (for the simple sha256 call). 
+
+Curious how to reduce function names from 3kb.
+We can also look how to trim some kb using wee_alloc
+
+But really, 28kb is looking quite good.
+
+### wasm-opt
+
+[binaryen](https://github.com/WebAssembly/binaryen) contains a `wasm-opt` command.
+Compile it or [use the docker images](https://github.com/confio/wasm-opt)
+
+```
+cd wasm
+docker run --rm -v "$(pwd)":/data wasm-opt:latest hasher.wasm -o hasher_opt.wasm -Os
+ls -l
+mv hasher_opt.wasm hasher.wasm
+```
+
+Not much code size change. No significant changes in gas cost.
+This seems to be done in existing rust toolchain
+
+## More tips
+
+Here are some other potential tools to try out to shrink space:
+
 * [wasm-snip](https://github.com/rustwasm/wasm-snip) can remove specified functions
-* [binaryen](https://github.com/WebAssembly/binaryen) contains a `wasm-opt` command.
-Compile it or [use the docker images](https://github.com/gonowa/wasm-opt)
 
 Note: [cargo-bloat](https://github.com/RazrFalcon/cargo-bloat) is an interesting project but only for ELF
+
 
 ## Using wee_alloc
 

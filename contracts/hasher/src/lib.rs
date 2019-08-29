@@ -10,7 +10,7 @@ pub extern "C" fn hash(count: i32, start: i32, step: i32) -> i32 {
 // adding all bytes together.
 //
 // weird algorithm for simple wasm interface
-pub fn hash_num(count: i32, start: i32, step: i32) -> i32 {
+fn hash_num(count: i32, start: i32, step: i32) -> i32 {
     let data = build_array(start, step);
 
     // one digest to get proper type
