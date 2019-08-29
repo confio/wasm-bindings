@@ -29,8 +29,16 @@ RUN cargo test
 # don't run these tests, as they fail, but build all deps
 RUN cargo build --tests --features llvm
 
+# add some build tooling
+COPY Makefile /app/
+RUN make tools
+
 # we now need to remove the dummy wasm_bindings compilation artifacts (as they are newer than source)
 RUN rm -rf $(find target/debug -name 'wasm_bindings-*')
+
+# prebuild wasm (only rebuild if changed since docker image built)
+COPY contracts/hasher /app/contracts/hasher/
+RUN make wasm
 
 # we want to use the cached target from the build, and the src from our actual code
 # docker run --mount type=bind,src="$(pwd)",dst=/app --mount type=volume,dst=/app/target --rm -it wasmbind:nightly /bin/bash

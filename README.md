@@ -55,9 +55,15 @@ This is also the start of allowing CI builds
 
 ```shell
 docker build -t wasmbind:nightly .
-docker run --mount type=bind,src="$(pwd)",dst=/app --mount type=volume,dst=/app/target --rm wasmbind:nightly
-docker run --mount type=bind,src="$(pwd)",dst=/app --mount type=volume,dst=/app/target --rm wasmbind:nightly make test_llvm
+
+# note that all output dirs (target, wasm) are only in the docker image
+# they have cached results from the build step, will incrementally recompile any changes since then
+docker run --mount type=bind,src="$(pwd)",dst=/app,readonly --mount type=volume,dst=/app/target --mount type=volume,dst=/app/contracts/hasher/target --mount type=volume,dst=/app/wasm  --rm wasmbind:nightly
+docker run --mount type=bind,src="$(pwd)",dst=/app,readonly --mount type=volume,dst=/app/target --mount type=volume,dst=/app/contracts/hasher/target --mount type=volume,dst=/app/wasm --rm wasmbind:nightly make test_llvm
+
+# interactive see docker build artifacts only
+docker run --rm -it wasmbind:nightly /bin/bash
 
 # interactive
-docker run --mount type=bind,src="$(pwd)",dst=/app --mount type=volume,dst=/app/target --rm -it wasmbind:nightly /bin/bash
+docker run --mount type=bind,src="$(pwd)",dst=/app,readonly --mount type=volume,dst=/app/target --mount type=volume,dst=/app/contracts/hasher/target --mount type=volume,dst=/app/wasm --rm -it wasmbind:nightly /bin/bash
 ```
