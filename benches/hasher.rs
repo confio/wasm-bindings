@@ -15,12 +15,26 @@ fn bench_run_singlepass(c: &mut Criterion) {
     });
 }
 
+fn bench_setup_singlepass(c: &mut Criterion) {
+    c.bench_function("wasm_setup_singlepass()", |b| {
+        b.iter(|| { let _i = setup_singlepass().unwrap(); })
+    });
+}
+
 fn bench_run_clif(c: &mut Criterion) {
     let instance = setup_clif().unwrap();
     c.bench_function("wasm_hash_clif(100, 16, 43)", |b| {
         b.iter(|| run(&instance, black_box(100), black_box(16), black_box(43)))
     });
 }
+
+
+fn bench_setup_clif(c: &mut Criterion) {
+    c.bench_function("wasm_setup_clif()", |b| {
+        b.iter(|| { let _i = setup_clif().unwrap(); })
+    });
+}
+
 
 #[cfg(feature = "llvm")]
 fn bench_run_llvm(c: &mut Criterion) {
@@ -29,6 +43,14 @@ fn bench_run_llvm(c: &mut Criterion) {
         b.iter(|| run(&instance, black_box(100), black_box(16), black_box(43)))
     });
 }
+
+#[cfg(feature = "llvm")]
+fn bench_setup_llvm(c: &mut Criterion) {
+    c.bench_function("wasm_setup_llvm()", |b| {
+        b.iter(|| { let _i = setup_llvm().unwrap(); })
+    });
+}
+
 
 fn bench_run_metered(c: &mut Criterion) {
     let mut instance = setup_metered(100000000).unwrap();
@@ -40,9 +62,14 @@ fn bench_run_metered(c: &mut Criterion) {
     });
 }
 
+fn setup_config() -> Criterion {
+    let base = Criterion::default();
+    base.sample_size(10)
+}
+
 #[cfg(feature = "llvm")]
 criterion_group!(
-    example,
+    hashing,
     bench_run_singlepass,
     bench_run_clif,
     bench_run_llvm,
@@ -51,10 +78,25 @@ criterion_group!(
 
 #[cfg(not(feature = "llvm"))]
 criterion_group!(
-    example,
+    hashing,
     bench_run_singlepass,
     bench_run_clif,
     bench_run_metered
 );
 
-criterion_main!(example);
+#[cfg(feature = "llvm")]
+criterion_group!(
+    name = setup;
+    config = setup_config();
+    targets = bench_setup_singlepass, bench_setup_clif, bench_setup_llvm
+);
+
+#[cfg(not(feature = "llvm"))]
+criterion_group!(
+    name = setup;
+    config = setup_config();
+    targets = bench_setup_singlepass, bench_setup_clif
+);
+
+
+criterion_main!(hashing, setup);

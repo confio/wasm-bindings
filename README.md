@@ -67,3 +67,49 @@ docker run --rm -it wasmbind:nightly /bin/bash
 # interactive
 docker run --mount type=bind,src="$(pwd)",dst=/app,readonly --mount type=volume,dst=/app/target --mount type=volume,dst=/app/contracts/hasher/target --mount type=volume,dst=/app/wasm --rm -it wasmbind:nightly /bin/bash
 ```
+
+## Benchmarks
+
+I made some very rough benches on my laptop to get relative speed and cost of different backends.
+These are not meant as absolute numbers, but relative comparisons should be solid.
+
+Time to run 100 sha256 hashes in a wasm function:
+
+```
+wasm_hash_metered(100, 16, 43)                                                                            
+                        time:   [346.44 us 347.69 us 349.07 us]
+wasm_hash_singlepass(100, 16, 43)                                                                            
+                        time:   [312.75 us 313.70 us 314.73 us]
+wasm_hash_clif(100, 16, 43)                                                                            
+                        time:   [106.29 us 107.58 us 109.09 us]
+wasm_hash_llvm(100, 16, 43)                                                                            
+                        time:   [55.469 us 55.640 us 55.832 us]
+```
+
+First, note that metered here is singlepass with gas metering, and it is about a 25% performance hit. Not bad at all.
+
+Second, notice that clif gives ~3x speedup on singlepass, and llvm another ~2x. And the speed running llvm compiled wasm
+is around 555ns per sha256 call, which seems comparable (or faster!) than the last time I benchmarked sha256 in go.
+
+Another important point is the one-time overhead to compile wasm to native code.
+This only has to be done one time on contract creation, while the above is done
+on every run. But it seems the execution speed bonus has a heavy upfront cost.
+It may be worth digging into see where one is better than the other.
+
+```
+wasm_setup_singlepass() time:   [3.5701 ms 3.5936 ms 3.6213 ms]                       
+
+wasm_setup_clif()       time:   [18.735 ms 19.501 ms 19.902 ms]                             
+
+wasm_setup_llvm()       time:   [530.72 ms 532.92 ms 536.13 ms]                            
+```
+
+We see clif having a 6x compile cost for the 3x execution speedup, which seems fair.
+But llvm needs an additional 25x upfront cost for the next 2x speedup.
+Making it best suited for frequently executed, computationally heavy contracts,
+involving eg. signature verification.
+
+Also note that llvm is the only one to support both gas metering (singlepass and llvm)
+as well as serializing the compiled modules (clif and llvm), so is our only real choice now.
+If serialization is added to singlepass, or gas metering support to clif, then those would be compelling options.
+
