@@ -89,7 +89,11 @@ wasm_hash_llvm(100, 16, 43)
 First, note that metered here is singlepass with gas metering, and it is about a 25% performance hit. Not bad at all.
 
 Second, notice that clif gives ~3x speedup on singlepass, and llvm another ~2x. And the speed running llvm compiled wasm
-is around 555ns per sha256 call, which seems comparable (or faster!) than the last time I benchmarked sha256 in go.
+is around 555ns per sha256 call. For reference, I benchmarked running the native go crypto/sha256 
+library, which [uses hand-optimized assembly routines](https://golang.org/src/crypto/sha256/sha256block_amd64.s)
+and got around `302ns/ops` on the same machine. Showing that with the llvm backed, we are
+within a factor of 2 of hand-optimized solutions, which should be acceptable for
+almost any workload.
 
 Another important point is the one-time overhead to compile wasm to native code.
 This only has to be done one time on contract creation, while the above is done
@@ -113,3 +117,8 @@ Also note that llvm is the only one to support both gas metering (singlepass and
 as well as serializing the compiled modules (clif and llvm), so is our only real choice now.
 If serialization is added to singlepass, or gas metering support to clif, then those would be compelling options.
 
+But don't take my word, try it on your computer:
+
+`cargo bench` or `cargo bench --features llvm` (if you set this up)
+
+`cd golang && go test -bench .`
